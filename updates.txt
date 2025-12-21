@@ -1,0 +1,7 @@
+    14/12/25
+        - Basic design with components is ready in frontend
+        - Cluster and DB connection successfull in Backend
+
+    16/12/25
+        - Registration and login is done working and tested
+        ~ have added a message and chat models as well as routes need to test(Architecture is unprofessional so have to update it and refer something)
