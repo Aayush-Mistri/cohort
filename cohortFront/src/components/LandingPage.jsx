@@ -37,15 +37,16 @@ const LandingPage = () => {
             className="toggle-adjuster-btn-2"
             onMouseEnter={enlargeCursor}
             onMouseLeave={resetCursor}
+            onClick={"/signup"}
           >
-            SignUp
+            <a href="/signup">Signup</a>
           </button>
           <button
             className="toggle-adjuster-btn-2"
             onMouseEnter={enlargeCursor}
             onMouseLeave={resetCursor}
           >
-            Login
+            <a href="/login">Login</a>
           </button>
         </div>
 
