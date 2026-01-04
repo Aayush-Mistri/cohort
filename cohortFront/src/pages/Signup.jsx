@@ -2,8 +2,23 @@ import React, { useState, useCallback } from 'react';
 import LiquidGradientBackground from '../components/LiquidGradientBackground';
 import { useCustomCursor } from '../hooks/useCustomCursor';
 import '../style/auth.css';
+import { registerUser } from "../api/auth.js";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 
 const SignupPage = () => {
+
+
+  const navigate = useNavigate();
+const token = localStorage.getItem("token");
+
+  if (token) {
+    return <Navigate to="/homepage" replace />;
+  }
+
+
   const [sceneManager, setSceneManager] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -67,17 +82,35 @@ const SignupPage = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-    
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Signup submitted:', formData);
-      // Handle signup logic here
-    } else {
-      setErrors(newErrors);
+ 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const newErrors = validateForm();
+
+  if (Object.keys(newErrors).length === 0) {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
+        name: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log("Signup response:", res.data);
+
+      // Save token
+      localStorage.setItem("token", res.data.token);
+
+      // Redirect to homepage
+      navigate("/homepage", { replace: true });
+    } catch (err) {
+      console.error("Signup error:", err.response?.data || err.message);
+      setErrors({ general: err.response?.data.message || "Signup failed" });
     }
-  };
+  } else {
+    setErrors(newErrors);
+  }
+};
 
   return (
     <div className="auth-page" style={{ cursor: 'none' }}>

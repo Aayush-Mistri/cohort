@@ -2,8 +2,24 @@ import React, { useState, useCallback } from 'react';
 import LiquidGradientBackground from '../components/LiquidGradientBackground';
 import { useCustomCursor } from '../hooks/useCustomCursor';
 import '../style/auth.css';
+import { loginUser } from "../api/auth.js";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+const token = localStorage.getItem("token");
+
+  if (token) {
+    return <Navigate to="/homepage" replace />;
+  }
+
+
   const [sceneManager, setSceneManager] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
@@ -46,18 +62,35 @@ const LoginPage = () => {
     
     return newErrors;
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const newErrors = validateForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-    
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Login submitted:', formData);
-      // Handle login logic here
-    } else {
-      setErrors(newErrors);
+  if (Object.keys(newErrors).length === 0) {
+    console.log("Login submitted:", formData);
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      console.log("Login response:", res.data);
+
+      // Save token to localStorage
+      localStorage.setItem("token", res.data.token);
+
+      // Redirect to homepage
+      navigate("/homepage", { replace: true });
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+      setErrors({ general: err.response?.data.message || "Login failed" });
     }
-  };
+  } else {
+    setErrors(newErrors);
+  }
+};
+
 
   return (
     <div className="auth-page" style={{ cursor: 'none' }}>
