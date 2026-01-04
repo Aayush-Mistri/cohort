@@ -6,8 +6,8 @@ import Signup from "./pages/Signup";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./components/LandingPage";
 import PrivateRoute from "./components/PrivateRoute";
-
 import './style/index2.css';
+import './style/homepage.css';
 
 function App() {
   return (

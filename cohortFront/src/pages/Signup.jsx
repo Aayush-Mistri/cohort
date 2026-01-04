@@ -5,6 +5,7 @@ import '../style/auth.css';
 import { registerUser } from "../api/auth.js";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 
 
@@ -82,8 +83,7 @@ const token = localStorage.getItem("token");
     return newErrors;
   };
 
- 
-const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
   const newErrors = validateForm();
 
@@ -95,17 +95,14 @@ const handleSubmit = async (e) => {
         email: formData.email,
         password: formData.password,
       });
-
       console.log("Signup response:", res.data);
 
-      // Save token
+      // Save token & redirect
       localStorage.setItem("token", res.data.token);
-
-      // Redirect to homepage
       navigate("/homepage", { replace: true });
     } catch (err) {
       console.error("Signup error:", err.response?.data || err.message);
-      setErrors({ general: err.response?.data.message || "Signup failed" });
+      setErrors({ general: err.response?.data?.message || "Signup failed" });
     }
   } else {
     setErrors(newErrors);
